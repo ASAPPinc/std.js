@@ -5,7 +5,7 @@ var each = require('./each')
 var msTime = module.exports = timeWithBase(1) // millisecond
 
 function inNanoseconds() { return timeWithBase(msTime.nanoseconds) }
-function inMicroseconds() { return timeWithBase(msTime.milliseconds) }
+function inMicroseconds() { return timeWithBase(msTime.microseconds) }
 function inMilliseconds() { return timeWithBase(msTime.milliseconds) }
 function inSeconds() { return timeWithBase(msTime.seconds) }
 function inMinutes() { return timeWithBase(msTime.minutes) }
