@@ -33,7 +33,7 @@ var URL = Class(function() {
 
 	this.toString = function() {
 		return [
-			this.protocol || '//',
+			this.protocol + '//',
 			this.host,
 			this.pathname,
 			this.getSearch(),
