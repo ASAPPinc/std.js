@@ -82,7 +82,8 @@ function timeWithBase(base) {
 	
 	function _pad(num) { return num < 10 ? '0'+num : num }
 
-	function ago(ts, yield) { return ago.stepFunction(ts, yield) }
+	function ago(ts, yieldFn) { return ago.stepFunction(ts, yieldFn) }
+	
 	ago.stepFunction = _stepFunction(
 		10 * time.second, 'just now', null,
 		time.minute, 'less than a minute ago', null,
@@ -130,23 +131,23 @@ function timeWithBase(base) {
 	var MAX_TIMEOUT_VALUE = 2147483647
 	function _stepFunction() {
 		var steps = arguments
-		var stepFn = function(basedTimestamp, yield) {
+		var stepFn = function(basedTimestamp, yieldFn) {
 			var timeAgo = (now() - basedTimestamp)
 			var millisecondsAgo = timeAgo * base
 			if (timeAgo < 0) {
-				setTimeout(curry(stepFn, basedTimestamp, yield), -millisecondsAgo + 1)
-				yield && yield('future')
+				setTimeout(curry(stepFn, basedTimestamp, yieldFn), -millisecondsAgo + 1)
+				yieldFn && yieldFn('future')
 				return 'future'
 			}
 			for (var i=0; i<steps.length; i+=3) {
 				if (timeAgo > steps[i]) { continue }
 				var result = _getStepResult(timeAgo, steps, i)
-				if (yield) {
-					yield(result.payload)
+				if (yieldFn) {
+					yieldFn(result.payload)
 					if (result.smallestGranularity) {
 						var timeoutIn = result.smallestGranularity - (timeAgo % result.smallestGranularity)
 						var timeoutInMs = Math.min(timeoutIn*base, MAX_TIMEOUT_VALUE)
-						setTimeout(curry(stepFn, basedTimestamp, yield), timeoutInMs)
+						setTimeout(curry(stepFn, basedTimestamp, yieldFn), timeoutInMs)
 					}
 				}
 				return result.payload
