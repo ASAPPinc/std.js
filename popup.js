@@ -1,12 +1,14 @@
 var extend = require('./extend'),
-	map = require('./map')
+	each = require('./each')
 
 module.exports = function(url, winID, opts) {
-	opts = extend(opts, module.exports.defaults)
+	opts = extend(opts || {}, module.exports.defaults)
 	if (!opts['left']) { opts['left'] = Math.round((screen.width - opts['width']) / 2) }
 	if (!opts['top']) { opts['top'] = Math.round((screen.height - opts['height']) / 2) }
 
-	var popupStr = map(opts, function(val, key) { return key+'='+val }).join(',')
+	var res = []
+	each(opts, function(val, key) { res.push(key+'='+val) })
+	var popupStr = res.join(',')
 
 	return window.open(url, winID, popupStr)
 }
